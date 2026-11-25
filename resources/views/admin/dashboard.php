@@ -1,21 +1,20 @@
 <section class="admin-heading">
     <div>
         <h1>Dashboard</h1>
-        <p class="muted">Manage drinks and check recent sales.</p>
     </div>
-    <a class="button" href="/admin/products/create">Add a drink</a>
+    <a class="button" href="/admin/products/create">Add a Product</a>
 </section>
 
 <section class="admin-section">
     <div class="admin-section-heading">
-        <div><h2>Drinks</h2><p class="muted"><?= e($total) ?> products</p></div>
+        <div><h2>Products</h2><p class="muted"><?= e($total) ?> products</p></div>
         <a href="/products">View shop</a>
     </div>
     <?php if ($products === []): ?>
-        <div class="empty-state"><p>No drinks added yet.</p><a href="/admin/products/create">Add your first drink</a></div>
+        <div class="empty-state"><p>No Products added yet.</p><a href="/admin/products/create">Add your first product</a></div>
     <?php else: ?>
         <div class="table-wrap"><table>
-            <thead><tr><th>Drink</th><th>Price</th><th>In stock</th><th></th></tr></thead>
+            <thead><tr><th>Product</th><th>Price</th><th>In stock</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($products as $product): ?>
                 <tr>
@@ -27,7 +26,7 @@
             <?php endforeach; ?>
             </tbody>
         </table></div>
-        <?php if ($total > count($products)): ?><p class="muted">Showing the first <?= count($products) ?> drinks. <a href="/products">View all in the shop</a>.</p><?php endif; ?>
+        <?php if ($total > count($products)): ?><p class="muted">Showing the first <?= count($products) ?> Products. <a href="/products">View all in the shop</a>.</p><?php endif; ?>
     <?php endif; ?>
 </section>
 
@@ -37,7 +36,7 @@
         <div class="empty-state"><p>No sales yet.</p></div>
     <?php else: ?>
         <div class="table-wrap"><table>
-            <thead><tr><th>When</th><th>Customer</th><th>Drink</th><th>Qty</th><th>Total</th></tr></thead>
+            <thead><tr><th>When</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th></tr></thead>
             <tbody>
             <?php foreach ($recentSales as $sale): ?>
                 <tr>
