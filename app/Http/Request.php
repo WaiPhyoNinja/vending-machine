@@ -13,6 +13,7 @@ final class Request
         public readonly array $body,
         public readonly array $headers,
         public readonly ?array $identity = null,
+        public readonly string $clientIp = 'unknown',
     ) {
     }
 
@@ -35,6 +36,8 @@ final class Request
             $_GET,
             $body,
             array_change_key_case($headers, CASE_LOWER),
+            null,
+            $_SERVER['REMOTE_ADDR'] ?? 'unknown',
         );
     }
 

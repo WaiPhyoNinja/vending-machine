@@ -16,6 +16,7 @@ use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 use App\Security\Auth;
 use App\Security\Jwt;
+use App\Security\RateLimiter;
 use App\Services\ProductService;
 use App\Services\PurchaseService;
 use App\Services\TransactionService;
@@ -75,7 +76,7 @@ $purchaseService = new PurchaseService($pdo, $productRepository, $transactionRep
 
 $purchaseRepository = new PurchaseRepository($purchaseService);
 
-$router = new Router($auth, $jwt);
+$router = new Router($auth, $jwt, new RateLimiter(dirname(__DIR__) . '/storage/rate-limits'));
 $router->register(new HomeController());
 $router->register(new ProductsController($productRepository, $purchaseRepository, $transactionRepository, $auth));
 $router->register(new AuthController($userRepository, $auth));

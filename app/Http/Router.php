@@ -6,6 +6,7 @@ namespace App\Http;
 
 use App\Security\Auth;
 use App\Security\Jwt;
+use App\Security\RateLimiter;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -18,6 +19,7 @@ final class Router
     public function __construct(
         private readonly Auth $auth,
         private readonly Jwt $jwt,
+        private readonly ?RateLimiter $rateLimiter = null,
     ) {
     }
 
@@ -54,6 +56,22 @@ final class Router
             }
 
             try {
+                if ($this->rateLimiter !== null && str_starts_with($request->path, '/api/')) {
+                    $isToken = $request->method === 'POST' && $request->path === '/api/token';
+                    $retryAfter = $this->rateLimiter->retryAfter(
+                        ($isToken ? 'token:' : 'api:') . $request->clientIp,
+                        $isToken ? 5 : 60,
+                        60,
+                    );
+                    if ($retryAfter > 0) {
+                        return new Response(
+                            json_encode(['error' => 'Too many requests. Try again shortly.'], JSON_THROW_ON_ERROR),
+                            429,
+                            ['Content-Type' => 'application/json; charset=UTF-8', 'Retry-After' => (string) $retryAfter],
+                        );
+                    }
+                }
+
                 $identity = match ($registered['route']->auth) {
                     'web' => $this->auth->user(),
                     'api' => $this->jwt->authenticate($request->headers['authorization'] ?? ''),

@@ -76,6 +76,8 @@ curl -X POST http://127.0.0.1:8000/api/token \
 
 Set `JWT_TTL` to change the token lifetime in seconds. Use HTTPS in deployment and keep `.env`, `database/`, and `vendor/` outside the web document root; point the server document root at `public/`.
 
+API requests are limited by client IP to 60 per minute. `POST /api/token` allows 5 requests per minute. Excess API requests return HTTP 429 and `Retry-After`. The limiter stores counters in `storage/rate-limits`; PHP needs write access to that directory. Browser routes are not rate limited.
+
 ## Tests
 
 ```sh
