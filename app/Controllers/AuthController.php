@@ -91,6 +91,6 @@ final class AuthController
             return Response::html('Invalid form token. Reload the page and try again.', 419);
         }
         $this->auth->logout();
-        return redirect('/products');
+        return redirect('/');
     }
 }
