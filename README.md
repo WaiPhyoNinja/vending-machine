@@ -1,10 +1,10 @@
-# Corner Shop Vending
+#  Vending Machine
 
 A small, server-rendered PHP 8.2+ vending machine application. It uses PHP attributes for routes, PDO for MySQL, PHP sessions for the website, and short-lived HS256 bearer tokens for the API.
 
 ## What it does
 
-- Lists drinks with pagination and sorting.
+- Lists products with pagination and sorting. Product URLs include the name before the ID, such as `/products/coke-23` and `/products/coke-23/purchase`; older URLs redirect to this format.
 - Lets admins add, edit, and remove products, and review recent sales.
 - Lets registered users purchase one or more units. A stock lock, quantity update, and sale record happen in one database transaction.
 - Keeps sales linked to their user and product; a product with sales cannot be deleted.
@@ -22,6 +22,8 @@ Prices are kept to three decimal places so `Pepsi` can be stored exactly as `$6.
 - `transactions`: buyer, product, quantity, unit price, total, and timestamp. Foreign keys preserve sales history by preventing deletion of users or sold products.
 
 The purchase service locks the selected product row with `SELECT ... FOR UPDATE`, checks the remaining stock, decrements inventory, and inserts the transaction before committing. A failure rolls the entire operation back.
+
+Controllers call classes in `app/Repositories`, which delegate to the database logic in `app/Services`. `PurchaseService` coordinates a purchase within one database transaction. Repository and service contracts are in `app/Interfaces`, while `app/Database/Connection.php` creates the PDO connection.
 
 ## Run locally
 
